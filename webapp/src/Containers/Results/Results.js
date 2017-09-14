@@ -26,23 +26,34 @@ class Results extends Component{
 				<Header	title = 'Results'/>
 				<div style={this.styles.list} >	
 				    <List>
-	      				<ListItem primaryText="First"  
+	      				<ListItem 
+	      					primaryText="First"  
 	      					disabled = {true}
+	      					initiallyOpen = {true}
 	      					nestedItems={[
 				                <ListItem
+				                	disabled = {true}
 				                  	key={1}
 				                  	primaryText="Team1"
 				                />,
 				                <ListItem
+				                	disabled = {true}
 				                  	key={2}
 				                  	primaryText="Team2"
 				                />,
 			                ]}
 			            />
 	      				<Divider />
-	      				<ListItem primaryText="Second"  />
+
+	      				<ListItem 
+	      					primaryText="Second"
+	      					disabled = {true}
+	      				/>
 	      				<Divider />
-	     				<ListItem primaryText="Third"  />
+	     				<ListItem 
+	     					primaryText="Third"
+	     					disabled = {true}  
+	     				/>
 	    			</List>
 	    		</div>
 			</div>
