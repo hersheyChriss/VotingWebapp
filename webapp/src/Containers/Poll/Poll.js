@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
+import {List, ListItem} from 'material-ui/List';
+import Paper from 'material-ui/Paper';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
-import './Poll.css';
+import s from './Poll.css';
 
 const SortableItem = SortableElement(({value}) =>
-  <li>{value}</li>
+  <ListItem primaryText={value}></ListItem>
 );
 
 const SortableList = SortableContainer(({items}) => {
   return (
-    <ul>
+    <List>
       {items.map((value, index) => (
         <SortableItem key={`item-${index}`} index={index} value={value} />
       ))}
-    </ul>
+    </List>
   );
 });
 
@@ -25,6 +27,13 @@ class Poll extends Component {
 		this.state = {
 			items: ['Green', 'Yellow', 'Red', 'Blue'],
 		}
+
+		this.styles = {
+			list: {
+				width: '50%',
+				margin: '0 auto',
+			}
+		}
 	}
 
 	onSortEnd = ({oldIndex, newIndex}) => {
@@ -33,14 +42,18 @@ class Poll extends Component {
 	    });
 	 };
 
+
 	render() {
+	console.log(s.list);
 		return (
 			<div>
 				<AppBar
 				    title="Vote"
 				    iconClassNameRight="muidocs-icon-navigation-expand-more"
 				/>
-				<SortableList items={this.state.items} onSortEnd={this.onSortEnd} />
+				<Paper style={this.styles.list} zDepth={2} >
+					<SortableList items={this.state.items} onSortEnd={this.onSortEnd} />
+				</Paper>
 			</div>
 		);
 	}
