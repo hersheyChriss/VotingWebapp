@@ -24,7 +24,7 @@ def submit_vote():
     return 'OK', 200
 
 
-@app.route('/api/check_status', methods=['POST'])
+@app.route('/api/check_status', methods=['GET'])
 def check_status():
     data = json.loads(request.data)
     poll_id = data[u'poll_id']
@@ -36,3 +36,10 @@ def start_poll():
     data = json.loads(request.data)
     open_polls.add(data[u'poll_id'])
     return 'OK', 200
+
+
+@app.route('/api/get_ballot', methods=['GET'])
+def get_ballot():
+    data = json.loads(request.data)
+    poll_id = data[u'poll_id']
+    return json.dumps(polls[poll_id].get_ballot_info()), 200

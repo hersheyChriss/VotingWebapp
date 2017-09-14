@@ -27,7 +27,7 @@ class TestFlaskApiSuite(object):
         app = cntrlr.app.test_client()
         poll = polls_mock.__getitem__.return_value
         poll.check_status.return_value = {'foo': 'bar'}
-        resp = app.post('/api/check_status', data=json.dumps(dict(poll_id='foo')))
+        resp = app.get('/api/check_status', data=json.dumps(dict(poll_id='foo')))
         polls_mock.__getitem__.assert_called_once_with('foo')
         poll.check_status.assert_called_once_with()
         assert resp.status_code == 200
@@ -39,3 +39,16 @@ class TestFlaskApiSuite(object):
         assert 'foo' in cntrlr.open_polls
         assert resp.status_code == 200
         assert resp.data == 'OK'
+
+    @patch('pref_vote_app.controllers.polls')
+    def test_get_ballot(self, polls_mock):
+        app = cntrlr.app.test_client()
+        poll = polls_mock.__getitem__.return_value
+        ballot_info = {'boo': 'baz'}
+        poll.get_ballot_info.side_effect = [ballot_info]
+        resp = app.get('/api/get_ballot', data=json.dumps(dict(poll_id='foo')))
+        polls_mock.__getitem__.assert_called_once_with('foo')
+        poll.get_ballot_info.assert_called_once_with()
+
+        assert resp.status_code == 200
+        assert resp.data == json.dumps(ballot_info)
