@@ -8,6 +8,7 @@ import pref_vote_app.controllers as cntrlr
 class TestFlaskApiSuite(object):
     @patch('pref_vote_app.controllers.polls')
     @patch('pref_vote_app.controllers.place_holder')
+
     def test_submit_vote(self, stv_mock, polls_mock):
         app = cntrlr.app.test_client()
         poll = MagicMock()
@@ -52,3 +53,14 @@ class TestFlaskApiSuite(object):
 
         assert resp.status_code == 200
         assert resp.data == json.dumps(ballot_info)
+
+    def test_stop_poll(self):
+        app = cntrlr.app.test_client()
+
+        app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
+        assert 'foo' in cntrlr.open_polls
+
+        resp = app.post('/api/stop_poll', data=json.dumps(dict(poll_id='foo')))
+        assert 'foo'not in cntrlr.open_polls
+        assert resp.status_code == 200
+        assert resp.data == 'OK'
