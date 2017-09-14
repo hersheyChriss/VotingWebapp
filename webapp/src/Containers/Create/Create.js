@@ -59,15 +59,27 @@ class Create extends Component{
   		}
 	};
 
-	handleRequestDelete = (key) => {
+	handleRequestDelete = (e) => {
 		this.candidateList = this.state.candidateList;
-		const candidateToDelete = this.candidateList.map((candidate) => candidate.key).indexOf(key);
+		const candidateToDelete = this.candidateList.map((candidate) => candidate.e).indexOf(e);
 		this.candidateList.splice(candidateToDelete, 1);
 		this.setState({candidateList: this.candidateList});
 		for (var count = 1; count <= this.state.candidateList.length; count++){
-			this.state.candidateList[this.state.candidateList.length - count].key = this.state.candidateList.length - count;
+			this.state.candidateList[this.state.candidateList.length - count].e = this.state.candidateList.length - count;
 		}
 	};	
+
+	handleClick = (e) => {
+		var object = {};
+		object.pollName = this.state.poll;
+		object.numWinners = this.state.numWinners;
+		var list = [];
+		for (var element = 0; element < this.state.candidateList.length; element++){
+			list.push(this.state.candidateList[element].value);
+		}
+		object.pollCandidates = list;
+		console.log(object);
+	}
 
   	renderChip(data) {
     	return (
@@ -120,6 +132,7 @@ class Create extends Component{
 	    			label="Submit" 
 	    			style={this.styles.button}
 	    			primary={true}
+	    			onClick = {this.handleClick}
 	    			/>
 	    		</div>
 	    	</div>
