@@ -9,7 +9,7 @@ export default class Routes extends Component {
         return (
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" component={Poll} />
+                    <Route exact path="/Vote/:id" component={Poll} />
                     <Route exact path="/create" component={Create} />
                 </Switch>
             </BrowserRouter>

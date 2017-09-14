@@ -29,7 +29,8 @@ class Create extends Component{
         		flexWrap: 'wrap',
      		},
      		button: {
-     			margin: 12,
+     			marginTop: 20,
+     			float: 'right'
      		},
 		};
 	}

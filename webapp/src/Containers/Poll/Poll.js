@@ -6,6 +6,7 @@ import Reorder from 'material-ui/svg-icons/action/reorder';
 import Toggle from 'material-ui/Toggle';
 import RaisedButton from 'material-ui/RaisedButton';
 import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
+import axios from 'axios';
 
 import s from './Poll.css';
 import Header from '../../Components/Header/Header';
@@ -42,13 +43,8 @@ class Poll extends Component {
 		super(props);
 
 		this.state = {
-			items: [
-				{disabled: true, label: 'Shout'},
-				{disabled: true, label: 'Yell'},
-				{disabled: true, label: 'Cry'},
-				{disabled: true, label: 'Sleep'},
-			],
-			show: false,
+			title: '',
+			items: [],
 		}
 
 		this.styles = {
@@ -64,6 +60,29 @@ class Poll extends Component {
 				float: 'right'
 			}
 		}
+	}
+
+	componentDidMount = () => {
+		var pollId = this.props.match.params.id;
+		axios.get('api/submit_vote', {pollId: pollId})
+			.then(response => {
+				this.createItems(response.data.candidates);
+				this.setState({title: response.data.pollName});
+			})
+			.catch(error => {
+				console.log(error)
+			});
+	}
+
+	createItems = (candidates) => {
+		var items = [];
+		for (var i = 0; i < candidates.length; i++) {
+			var item = {};
+			item.disabled = true;
+			item.label = candidates[i];
+			items.push(item);
+		}
+		this.setState({items: items});
 	}
 
 	onSortEnd = ({oldIndex, newIndex}) => {
@@ -98,7 +117,7 @@ class Poll extends Component {
 
 
 	render() {
-	console.log(s.list);
+
 		return (
 			<div>
 				<Header title="Vote" />
