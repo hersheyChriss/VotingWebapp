@@ -1,17 +1,29 @@
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
 import {List, ListItem} from 'material-ui/List';
-import Card from 'material-ui/Card';
 import Paper from 'material-ui/Paper';
-import Divider from 'material-ui/Divider';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import Reorder from 'material-ui/svg-icons/action/reorder';
+import Toggle from 'material-ui/Toggle';
+import RaisedButton from 'material-ui/RaisedButton';
+import {SortableContainer, SortableElement, SortableHandle, arrayMove} from 'react-sortable-hoc';
 
 import s from './Poll.css';
 import Header from '../../Components/Header/Header';
 
+const DragHandle = SortableHandle(() => <Reorder style={{position: 'absolute', right: '2%'}} />);
+
 const SortableItem = SortableElement(({value}) =>
-  <Paper style={{width: '100%', margin: '20px 0px 20px auto', height: 100}}>
-  	<p style={{fontSize: '2em'}}>{value}</p>
+  <Paper style={{width: '100%', margin: '20px 0px 20px auto', height: '4em'}}>
+  	<div style={{height: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', position: 'relative'}}>
+  		<Toggle 
+  			label={value.label}
+  			style={{width: '85%', marginLeft: '2%'}}
+  			iconStyle={{display: 'none'}}
+  			disabled={value.disabled}
+  		>
+  		</Toggle>
+  		<DragHandle />
+  	</div>
   </Paper>
 );
 
@@ -30,27 +42,59 @@ class Poll extends Component {
 		super(props);
 
 		this.state = {
-			items: ['Green', 'Yellow', 'Red', 'Blue'],
+			items: [
+				{disabled: true, label: 'Shout'},
+				{disabled: true, label: 'Yell'},
+				{disabled: true, label: 'Cry'},
+				{disabled: true, label: 'Sleep'},
+			],
 			show: false,
 		}
 
 		this.styles = {
 			list: {
-				width: '50%',
+				width: '75%',
 				margin: '0 auto',
 			},
 			paper: {
 				margin: 10,
 				width: '50%',
+			},
+			button: {
+				float: 'right'
 			}
 		}
 	}
 
 	onSortEnd = ({oldIndex, newIndex}) => {
+		if (newIndex > oldIndex) {
+			for (var i = newIndex; i >= 0; i--) {
+				this.state.items[i].disabled = false;
+			}
+		}
+		else {
+			this.state.items[oldIndex].disabled = false;
+			for (var i = newIndex - 1; i >= 0; i--) {
+				this.state.items[i].disabled = false;
+			} 
+		}
 	    this.setState({
 	    	items: arrayMove(this.state.items, oldIndex, newIndex),
 	    });
 	 };
+
+	 handleClick = () => {
+	 	var resultObj = {};
+		for (var i =  0; i < this.state.items.length; i++) {
+			if (!this.state.items[i].disabled) {
+				resultObj[i + 1] = this.state.items[i].label;
+			}
+			else {
+				break;
+			}
+		}
+		console.log(resultObj);
+	 }
 
 
 	render() {
@@ -59,7 +103,8 @@ class Poll extends Component {
 			<div>
 				<Header title="Vote" />
 				<div style={this.styles.list} >
-					<SortableList items={this.state.items} onSortEnd={this.onSortEnd} />
+					<SortableList useDragHandle={true} items={this.state.items} onSortEnd={this.onSortEnd} />
+					<RaisedButton primary={true} style={this.styles.button} label="submit" onClick={this.handleClick} />
 				</div>
 					
 
