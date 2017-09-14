@@ -13,13 +13,11 @@ class TestFlaskApiSuite(object):
         poll = MagicMock()
         poll_dict = {'foo': poll}
         polls_mock.__getitem__.side_effect = lambda k: poll_dict[k]
-        app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
         resp = app.post(
             '/api/submit_vote',
-            data=json.dumps(dict(poll_id='foo',
-                                 preferences={1:'bar',2:'baz'})))
-        app.post('/api/stop_poll', data=json.dumps(dict(poll_id='foo')))
-        stv_mock.Ballot.assert_called_once_with({1: u'bar',2: u'baz'})
+            data=json.dumps(dict(pollId='foo',
+                                 preferences={1:'bar', 2:'baz'})))
+        stv_mock.Ballot.assert_called_once_with({1: u'bar', 2: u'baz'})
         poll.submit_ballot.assert_called_once_with(stv_mock.Ballot.return_value)
         assert resp.status_code == 200
         assert resp.data == 'OK'
@@ -29,7 +27,7 @@ class TestFlaskApiSuite(object):
         app = cntrlr.app.test_client()
         poll = polls_mock.__getitem__.return_value
         poll.check_status.return_value = {'foo': 'bar'}
-        resp = app.get('/api/check_status', data=json.dumps(dict(poll_id='foo')))
+        resp = app.get('/api/check_status', data=json.dumps(dict(pollId='foo')))
         polls_mock.__getitem__.assert_called_once_with('foo')
         poll.check_status.assert_called_once_with()
         assert resp.status_code == 200
@@ -38,7 +36,7 @@ class TestFlaskApiSuite(object):
     def test_start_poll(self):
         app = cntrlr.app.test_client()
         assert 'foo' not in cntrlr.open_polls
-        resp = app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
+        resp = app.post('/api/start_poll', data=json.dumps(dict(pollId='foo')))
         assert 'foo' in cntrlr.open_polls
         assert resp.status_code == 200
         assert resp.data == 'OK'
@@ -49,7 +47,7 @@ class TestFlaskApiSuite(object):
         poll = polls_mock.__getitem__.return_value
         ballot_info = {'boo': 'baz'}
         poll.get_ballot_info.side_effect = [ballot_info]
-        resp = app.get('/api/get_ballot', data=json.dumps(dict(poll_id='foo')))
+        resp = app.get('/api/get_ballot', data=json.dumps(dict(pollId='foo')))
         polls_mock.__getitem__.assert_called_once_with('foo')
         poll.get_ballot_info.assert_called_once_with()
 
@@ -58,10 +56,10 @@ class TestFlaskApiSuite(object):
 
     def test_stop_poll(self):
         app = cntrlr.app.test_client()
-        app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
+        app.post('/api/start_poll', data=json.dumps(dict(pollId='foo')))
         assert 'foo' in cntrlr.open_polls
 
-        resp = app.post('/api/stop_poll', data=json.dumps(dict(poll_id='foo')))
+        resp = app.post('/api/stop_poll', data=json.dumps(dict(pollId='foo')))
         assert 'foo' not in cntrlr.open_polls
         assert resp.status_code == 200
         assert resp.data == 'OK'
@@ -73,7 +71,7 @@ class TestFlaskApiSuite(object):
         poll_id = 'abcdefgh'
         poll_pin = 'abcde'
         generator_mock.side_effect = [poll_id, poll_pin]
-        resp = app.post('/api/create_poll', 
+        resp = app.post('/api/create_poll',
                         data=json.dumps(dict(pollName='nar',
                             candidates =['bar', 'baz'],
                                              numOfWinners= 4)))
@@ -81,4 +79,4 @@ class TestFlaskApiSuite(object):
         assert resp.status_code == 200
         assert resp.data == json.dumps(dict(pollId=poll_id, pollPin=poll_pin))
 
-        
+
