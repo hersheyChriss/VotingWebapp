@@ -18,8 +18,8 @@ open_polls  = set()
 @app.route('/api/submit_vote', methods=['POST'])
 def submit_vote():
     data = json.loads(request.data)
-    vote_info = {int(key): data[u'preferences'][key] for key in data[u'preferences']}
     poll_id = data[u'poll_id']
+    vote_info = {int(key): data[u'preferences'][key] for key in data[u'preferences']}
     polls[poll_id].submit_ballot(place_holder.Ballot(vote_info))
     return 'OK', 200
 
@@ -33,6 +33,7 @@ def check_status():
 
 @app.route('/api/start_poll', methods=['POST'])
 def start_poll():
+    global open_polls
     data = json.loads(request.data)
     open_polls.add(data[u'poll_id'])
     return 'OK', 200
@@ -47,6 +48,7 @@ def get_ballot():
 
 @app.route('/api/stop_poll', methods=['POST'])
 def stop_poll():
+    global open_polls
     data = json.loads(request.data)
     open_polls.remove(data[u'poll_id'])
     return 'OK', 200

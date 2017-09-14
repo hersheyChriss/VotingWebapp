@@ -8,17 +8,18 @@ import pref_vote_app.controllers as cntrlr
 class TestFlaskApiSuite(object):
     @patch('pref_vote_app.controllers.polls')
     @patch('pref_vote_app.controllers.place_holder')
-
     def test_submit_vote(self, stv_mock, polls_mock):
         app = cntrlr.app.test_client()
         poll = MagicMock()
         poll_dict = {'foo': poll}
         polls_mock.__getitem__.side_effect = lambda k: poll_dict[k]
+        app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
         resp = app.post(
             '/api/submit_vote',
             data=json.dumps(dict(poll_id='foo',
-                                 preferences={0:'bar',1:'baz'})))
-        stv_mock.Ballot.assert_called_once_with({0: 'bar',1:'baz'})
+                                 preferences={1:'bar',2:'baz'})))
+        app.post('/api/stop_poll', data=json.dumps(dict(poll_id='foo')))
+        stv_mock.Ballot.assert_called_once_with({1: u'bar',2: u'baz'})
         poll.submit_ballot.assert_called_once_with(stv_mock.Ballot.return_value)
         assert resp.status_code == 200
         assert resp.data == 'OK'
@@ -36,6 +37,7 @@ class TestFlaskApiSuite(object):
 
     def test_start_poll(self):
         app = cntrlr.app.test_client()
+        assert 'foo' not in cntrlr.open_polls
         resp = app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
         assert 'foo' in cntrlr.open_polls
         assert resp.status_code == 200
@@ -56,11 +58,10 @@ class TestFlaskApiSuite(object):
 
     def test_stop_poll(self):
         app = cntrlr.app.test_client()
-
         app.post('/api/start_poll', data=json.dumps(dict(poll_id='foo')))
         assert 'foo' in cntrlr.open_polls
 
         resp = app.post('/api/stop_poll', data=json.dumps(dict(poll_id='foo')))
-        assert 'foo'not in cntrlr.open_polls
+        assert 'foo' not in cntrlr.open_polls
         assert resp.status_code == 200
         assert resp.data == 'OK'
