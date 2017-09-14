@@ -65,3 +65,20 @@ class TestFlaskApiSuite(object):
         assert 'foo' not in cntrlr.open_polls
         assert resp.status_code == 200
         assert resp.data == 'OK'
+
+    @patch('pref_vote_app.controllers._unique_generator')
+    @patch('pref_vote_app.controllers.place_holder')
+    def test_create_poll(self, stv_mock, generator_mock):
+        app = cntrlr.app.test_client()
+        poll_id = 'abcdefgh'
+        poll_pin = 'abcde'
+        generator_mock.side_effect = [poll_id, poll_pin]
+        resp = app.post('/api/create_poll', 
+                        data=json.dumps(dict(pollName='nar',
+                            candidates =['bar', 'baz'],
+                                             numOfWinners= 4)))
+        stv_mock.Poll.assert_called_once_with('nar', ['bar', 'baz'], poll_id, 4)
+        assert resp.status_code == 200
+        assert resp.data == json.dumps(dict(pollId=poll_id, pollPin=poll_pin))
+
+        
