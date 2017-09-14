@@ -36,3 +36,9 @@ def start_poll():
     data = json.loads(request.data)
     open_polls.add(data[u'poll_id'])
     return 'OK', 200
+
+@app.route('/api/stop_poll', methods=['POST'])
+def stop_poll():
+    data = json.loads(request.data)
+    open_polls.remove(data[u'poll_id'])
+    return 'OK', 200
