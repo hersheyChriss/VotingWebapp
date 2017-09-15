@@ -15,7 +15,7 @@ export default class Routes extends Component {
                 	<Route exact path="/:pin" component={Create} />
                     <Route exact path="/create/:pin" component={Create} />
                     <Route exact path="/poll/:id" component={Poll} />
-                    <Route exact path="/results" component={Results} />
+                    <Route exact path="/results:id" component={Results} />
                 </Switch>
             </BrowserRouter>
         );
