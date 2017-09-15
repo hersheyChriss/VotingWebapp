@@ -4,6 +4,7 @@ import Chip from 'material-ui/Chip';
 import RaisedButton from 'material-ui/RaisedButton';
 import Header from '../../Components/Header/Header';
 import teal700 from 'material-ui/styles/colors';
+import axios from 'axios';
 
 class Create extends Component{
 	constructor(props){
@@ -13,7 +14,9 @@ class Create extends Component{
 			poll: '',
 			numWinners: '',
 			candidate: '',
-			candidateList: []
+			candidateList: [],
+			pollId: 0,
+			pollPin: this.props.match.params.pin,
 		};
 
 		this.styles = {
@@ -37,15 +40,15 @@ class Create extends Component{
 
 	handleNameChange = (e) => {
 		this.setState({poll: e.target.value});
-	};
+	}
 
 	handleNumberChange = (e) => {
 		this.setState({numWinners: e.target.value});
-	};
+	}
 
 	handleCandidateChange = (e) => {
 		this.setState({candidate: e.target.value});
-	};
+	}
 
 	handleKeyPress = (e) => {
 		if(e.key == 'Enter'){
@@ -57,7 +60,7 @@ class Create extends Component{
 			this.setState({candidateList: listCopy});
 			this.setState({candidate: ""});
   		}
-	};
+	}
 
 	handleRequestDelete = (e) => {
 		this.candidateList = this.state.candidateList;
@@ -67,7 +70,7 @@ class Create extends Component{
 		for (var count = 1; count <= this.state.candidateList.length; count++){
 			this.state.candidateList[this.state.candidateList.length - count].e = this.state.candidateList.length - count;
 		}
-	};	
+	}
 
 	handleClick = (e) => {
 		var object = {};
@@ -79,6 +82,12 @@ class Create extends Component{
 		}
 		object.pollCandidates = list;
 		console.log(object);
+
+		axios.post('/api/create_poll', object)
+			.then(response => {
+				this.setState({pollId: response.data.pollId});
+				this.setState({pollPin: response.data.pollPin});
+			})
 	}
 
   	renderChip(data) {
@@ -98,43 +107,52 @@ class Create extends Component{
 			<div>
 				<Header	title = 'Create Poll'/>
 
-				<div style={this.styles.list} >
-					<TextField
-	      			floatingLabelText="Poll Name"
-	      			type = 'string'
-	      			fullWidth = {true}
-	      			value = {this.state.poll}
-	      			onChange={this.handleNameChange}
-	    			/><br />
+				{this.state.pollPin ? (
+					<div id="COME HRE JACOB">
+						Voting URL: <a href={"../poll/" + this.state.pollId}>{"../poll/" + this.state.pollId}</a><br/>
+						Manage Poll URL: <a href={"../create/" + this.state.pollPin}>{"../create/" + this.state.pollPin}</a><br/>
+						<RaisedButton label="Start"/>
+						<RaisedButton label="Stop"/>
+					</div>
+				) : (
+					<div style={this.styles.list} >
+						<TextField
+		      			floatingLabelText="Poll Name"
+		      			type = 'string'
+		      			fullWidth = {true}
+		      			value = {this.state.poll}
+		      			onChange={this.handleNameChange}
+		    			/><br />
 
-	    			<TextField
-	      			floatingLabelText="Number of Winners"
-	      			type = 'number'
-	      			fullWidth = {true}
-	      			value = {this.state.numWinners}
-	      			onChange={this.handleNumberChange}
-	    			/><br />
+		    			<TextField
+		      			floatingLabelText="Number of Winners"
+		      			type = 'number'
+		      			fullWidth = {true}
+		      			value = {this.state.numWinners}
+		      			onChange={this.handleNumberChange}
+		    			/><br />
 
-					<TextField
-	      			floatingLabelText="Candidates"
-	      			type = 'string'
-	      			fullWidth = {true}
-	      			value = {this.state.candidate}
-	      			onChange={this.handleCandidateChange}
-	      			onKeyPress={this.handleKeyPress}
-	    			/><br />
+						<TextField
+		      			floatingLabelText="Candidates"
+		      			type = 'string'
+		      			fullWidth = {true}
+		      			value = {this.state.candidate}
+		      			onChange={this.handleCandidateChange}
+		      			onKeyPress={this.handleKeyPress}
+		    			/><br />
 
-	    			<div style={this.styles.wrapper}>
-        				{this.state.candidateList.map(this.renderChip, this)}
-     				</div>
+		    			<div style={this.styles.wrapper}>
+	        				{this.state.candidateList.map(this.renderChip, this)}
+	     				</div>
 
-     				<RaisedButton 
-	    			label="Submit" 
-	    			style={this.styles.button}
-	    			primary={true}
-	    			onClick = {this.handleClick}
-	    			/>
-	    		</div>
+	     				<RaisedButton 
+		    			label="Submit" 
+		    			style={this.styles.button}
+		    			primary={true}
+		    			onClick = {this.handleClick}
+		    			/>
+		    		</div>
+				)}
 	    	</div>
 	    );
 	}
