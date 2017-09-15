@@ -44,7 +44,7 @@ class Poll extends Component {
 
 		this.state = {
 			title: '',
-			items: [],
+			items: [{disabled:"true", label:"cry"}, {disabled:"true", label:"uluate"}, {disabled:"true", label:"ball"}, {disabled:"true", label:"weep"}],
 		}
 
 		this.styles = {

@@ -38,7 +38,6 @@ class Results extends Component{
 			<div> 
 				<ListItem 
 					primaryText={key}  
-					disabled = {true}
 					initiallyOpen = {true}
 					nestedItems={this.createNestedList(this.state.winnerWinnerChickenDinners[key])}
 	        	/>
