@@ -1,6 +1,6 @@
 import json, string, random
 
-import pref_vote
+from pref_vote import poll, STV
 from flask import Flask, request
 
 
@@ -21,7 +21,7 @@ def submit_vote():
     data = json.loads(request.data)
     poll_id = data[u'pollId']
     vote_info = {int(key): data[u'preferences'][key] for key in data[u'preferences']}
-    polls[poll_id].submit_ballot(pref_vote.poll.Ballot(vote_info))
+    polls[poll_id].submit_ballot(poll.Ballot(vote_info))
     return 'OK', 200
 
 
@@ -29,7 +29,7 @@ def submit_vote():
 def check_status():
     data = json.loads(request.data)
     poll_id = data[u'pollId']
-    return json.dumps(polls[poll_id].check_status()), 200
+    return json.dumps(STV.run_STV_poll(polls[poll_id])), 200
 
 
 @app.route('/api/start_poll', methods=['POST'])
@@ -62,7 +62,7 @@ def create_poll():
     num_of_winners = int(data[u'numOfWinners'])
     poll_id = _unique_generator(8)
     poll_pin = _unique_generator(5)
-    polls[poll_id] = pref_vote.poll.Poll(poll_name, poll_candidates, poll_id, num_of_winners)
+    polls[poll_id] = poll.Poll(poll_name, poll_candidates, poll_id, num_of_winners)
     poll_pins[poll_pin] = poll_id
     return json.dumps(dict(pollId=poll_id, pollPin = poll_pin)), 200
 
