@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {List, ListItem} from 'material-ui/List';
 import Header from '../../Components/Header/Header';
 import Divider from 'material-ui/Divider';
+import axios from 'axios';
 
 
 class Results extends Component{
@@ -9,7 +10,8 @@ class Results extends Component{
 		super(props);
 
 		this.state = {
-			winnerWinnerChickenDinners: [['1']['Team1', 'Team2'], ['2']['Team3'], ['3']['Team4']]
+			winnerWinnerChickenDinners: {1:['Team1', 'Team2'], 2:['Team3'], 3:['Team4']},
+			winnersList: [],
 		};
 
 		this.styles = {
@@ -20,40 +22,50 @@ class Results extends Component{
 		}
 	}
 
+	componentDidMount = () => {
+		axios.get('/api/get_ballot', {pollId: this.props.match.params.id})
+			.then(response => {
+				this.setState({winnerWinnerChickenDinners: response})
+			})
+  			.catch(error => {
+    			console.log(error);
+  			});
+		this.createWinnerList();
+	}
+
+	createWinnerList(){
+		this.setState({winnersList: Object.keys(this.state.winnerWinnerChickenDinners).map((key, i) => 
+			<div> 
+				<ListItem 
+					primaryText={key}  
+					disabled = {true}
+					initiallyOpen = {true}
+					nestedItems={this.createNestedList(this.state.winnerWinnerChickenDinners[key])}
+	        	/>
+	        	<Divider />
+			</div>
+			)
+		});
+	}
+
+	createNestedList = (participants) => {
+		var nestedWinners = participants.map((participant, i) => 
+			<ListItem
+              	key={i}
+              	disabled = {true}
+               	primaryText={participant}
+            />
+		);
+		return nestedWinners;
+	}
+
 	render() {
 		return(
 			<div>
 				<Header	title = 'Results'/>
 				<div style={this.styles.list} >	
 				    <List>
-	      				<ListItem 
-	      					primaryText="First"  
-	      					disabled = {true}
-	      					initiallyOpen = {true}
-	      					nestedItems={[
-				                <ListItem
-				                	disabled = {true}
-				                  	key={1}
-				                  	primaryText="Team1"
-				                />,
-				                <ListItem
-				                	disabled = {true}
-				                  	key={2}
-				                  	primaryText="Team2"
-				                />,
-			                ]}
-			            />
-	      				<Divider />
-
-	      				<ListItem 
-	      					primaryText="Second"
-	      					disabled = {true}
-	      				/>
-	      				<Divider />
-	     				<ListItem 
-	     					primaryText="Third"
-	     					disabled = {true}  
-	     				/>
+	      				{this.state.winnersList}
 	    			</List>
 	    		</div>
 			</div>
