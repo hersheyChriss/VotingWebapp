@@ -7,7 +7,7 @@ import pref_vote_app.controllers as cntrlr
 
 class TestFlaskApiSuite(object):
     @patch('pref_vote_app.controllers.polls')
-    @patch('pref_vote_app.controllers.place_holder')
+    @patch('pref_vote_app.controllers.pref_vote')
     def test_submit_vote(self, stv_mock, polls_mock):
         app = cntrlr.app.test_client()
         poll = MagicMock()
@@ -17,8 +17,8 @@ class TestFlaskApiSuite(object):
             '/api/submit_vote',
             data=json.dumps(dict(pollId='foo',
                                  preferences={1:'bar', 2:'baz'})))
-        stv_mock.Ballot.assert_called_once_with({1: u'bar', 2: u'baz'})
-        poll.submit_ballot.assert_called_once_with(stv_mock.Ballot.return_value)
+        stv_mock.poll.Ballot.assert_called_once_with({1: u'bar', 2: u'baz'})
+        poll.submit_ballot.assert_called_once_with(stv_mock.poll.Ballot.return_value)
         assert resp.status_code == 200
         assert resp.data == 'OK'
 
@@ -65,7 +65,7 @@ class TestFlaskApiSuite(object):
         assert resp.data == 'OK'
 
     @patch('pref_vote_app.controllers._unique_generator')
-    @patch('pref_vote_app.controllers.place_holder')
+    @patch('pref_vote_app.controllers.pref_vote')
     def test_create_poll(self, stv_mock, generator_mock):
         app = cntrlr.app.test_client()
         poll_id = 'abcdefgh'
@@ -75,7 +75,7 @@ class TestFlaskApiSuite(object):
                         data=json.dumps(dict(pollName='nar',
                             candidates =['bar', 'baz'],
                                              numOfWinners= 4)))
-        stv_mock.Poll.assert_called_once_with('nar', ['bar', 'baz'], poll_id, 4)
+        stv_mock.poll.Poll.assert_called_once_with('nar', ['bar', 'baz'], poll_id, 4)
         assert resp.status_code == 200
         assert resp.data == json.dumps(dict(pollId=poll_id, pollPin=poll_pin))
 

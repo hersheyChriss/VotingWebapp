@@ -6,6 +6,8 @@ import Header from '../../Components/Header/Header';
 import teal700 from 'material-ui/styles/colors';
 import axios from 'axios';
 
+axios.defaults.baseURL = 'http://localhost:5000/'
+
 class Create extends Component{
 	constructor(props){
 		super(props);
@@ -145,8 +147,8 @@ class Create extends Component{
 	        				{this.state.candidateList.map(this.renderChip, this)}
 	     				</div>
 
-	     				<RaisedButton 
-		    			label="Submit" 
+	     				<RaisedButton
+		    			label="Submit"
 		    			style={this.styles.button}
 		    			primary={true}
 		    			onClick = {this.handleClick}

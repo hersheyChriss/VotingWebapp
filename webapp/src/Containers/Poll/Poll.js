@@ -16,7 +16,7 @@ const DragHandle = SortableHandle(() => <Reorder style={{position: 'absolute', r
 const SortableItem = SortableElement(({value}) =>
   <Paper style={{width: '100%', margin: '20px 0px 20px auto', height: '4em'}}>
   	<div style={{height: '100%', margin: '0 auto', display: 'flex', alignItems: 'center', position: 'relative'}}>
-  		<Toggle 
+  		<Toggle
   			label={value.label}
   			style={{width: '85%', marginLeft: '2%'}}
   			iconStyle={{display: 'none'}}
@@ -95,7 +95,7 @@ class Poll extends Component {
 			this.state.items[oldIndex].disabled = false;
 			for (var i = newIndex - 1; i >= 0; i--) {
 				this.state.items[i].disabled = false;
-			} 
+			}
 		}
 	    this.setState({
 	    	items: arrayMove(this.state.items, oldIndex, newIndex),
@@ -115,7 +115,7 @@ class Poll extends Component {
 		}
 		console.log(resultObj);
 
-		axios.post('api/submit_vote', {resultObj})
+		axios.post('/api/submit_vote', resultObj)
 			.catch(error => {
 					console.log(error)
 				});
@@ -131,7 +131,7 @@ class Poll extends Component {
 					<SortableList useDragHandle={true} items={this.state.items} onSortEnd={this.onSortEnd} />
 					<RaisedButton primary={true} style={this.styles.button} label="submit" onClick={this.handleClick} />
 				</div>
-					
+
 
 			</div>
 		);
