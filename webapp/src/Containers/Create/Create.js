@@ -108,7 +108,7 @@ class Create extends Component{
 				<Header	title = 'Create Poll'/>
 
 				{this.state.pollPin ? (
-					<div>
+					<div id="COME HRE JACOB">
 						Voting URL: <a href={"../poll/" + this.state.pollId}>{"../poll/" + this.state.pollId}</a><br/>
 						Manage Poll URL: <a href={"../create/" + this.state.pollPin}>{"../create/" + this.state.pollPin}</a><br/>
 						<RaisedButton label="Start"/>
