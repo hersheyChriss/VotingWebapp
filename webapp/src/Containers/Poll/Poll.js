@@ -104,6 +104,7 @@ class Poll extends Component {
 
 	 handleClick = () => {
 	 	var resultObj = {};
+	 	resultObj.pollId = this.props.match.params.id;
 		for (var i =  0; i < this.state.items.length; i++) {
 			if (!this.state.items[i].disabled) {
 				resultObj[i + 1] = this.state.items[i].label;
@@ -113,6 +114,11 @@ class Poll extends Component {
 			}
 		}
 		console.log(resultObj);
+
+		axios.post('api/submit_vote', {resultObj})
+			.catch(error => {
+					console.log(error)
+				});
 	 }
 
 
@@ -120,7 +126,7 @@ class Poll extends Component {
 
 		return (
 			<div>
-				<Header title="Vote" />
+				<Header title={this.state.title} />
 				<div style={this.styles.list} >
 					<SortableList useDragHandle={true} items={this.state.items} onSortEnd={this.onSortEnd} />
 					<RaisedButton primary={true} style={this.styles.button} label="submit" onClick={this.handleClick} />
