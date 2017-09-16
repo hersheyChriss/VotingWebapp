@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 dist/
 *.swp
+package-lock.json
