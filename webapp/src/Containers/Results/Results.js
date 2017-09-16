@@ -23,7 +23,7 @@ class Results extends Component{
 	}
 
 	componentDidMount = () => {
-		axios.get('/api/get_ballot', {pollId: this.props.match.params.id})
+		axios.get('http://localhost:5000/api/get_ballot', {pollId: this.props.match.params.id})
 			.then(response => {
 				this.setState({winnerWinnerChickenDinners: response})
 			})
@@ -48,7 +48,7 @@ class Results extends Component{
 	}
 
 	createNestedList = (participants) => {
-		var nestedWinners = participants.map((participant, i) => 
+		var nestedWinners = participants.map((participant, i) =>
 			<ListItem
               	key={i}
               	disabled = {true}
@@ -62,7 +62,7 @@ class Results extends Component{
 		return(
 			<div>
 				<Header	title = 'Results'/>
-				<div style={this.styles.list} >	
+				<div style={this.styles.list} >
 				    <List>
 	      				{this.state.winnersList}
 	    			</List>
