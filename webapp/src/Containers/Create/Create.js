@@ -1,10 +1,14 @@
 import React, {Component} from 'react';
 import TextField from 'material-ui/TextField';
 import Chip from 'material-ui/Chip';
+import {List, ListItem} from 'material-ui/List';
+import Divider from 'material-ui/Divider';
 import RaisedButton from 'material-ui/RaisedButton';
 import Header from '../../Components/Header/Header';
 import teal700 from 'material-ui/styles/colors';
 import axios from 'axios';
+import Subheader from 'material-ui/Subheader';
+
 
 axios.defaults.baseURL = 'http://localhost:5000/'
 
@@ -35,7 +39,8 @@ class Create extends Component{
      		},
      		button: {
      			marginTop: 20,
-     			float: 'right'
+     			float: 'right',
+     			margin: 12
      		},
 		};
 	}
@@ -64,13 +69,13 @@ class Create extends Component{
   		}
 	}
 
-	handleRequestDelete = (e) => {
+	handleRequestDelete = (key) => {
 		this.candidateList = this.state.candidateList;
-		const candidateToDelete = this.candidateList.map((candidate) => candidate.e).indexOf(e);
+		const candidateToDelete = this.candidateList.map((candidate) => candidate.key).indexOf(key);
 		this.candidateList.splice(candidateToDelete, 1);
 		this.setState({candidateList: this.candidateList});
 		for (var count = 1; count <= this.state.candidateList.length; count++){
-			this.state.candidateList[this.state.candidateList.length - count].e = this.state.candidateList.length - count;
+			this.state.candidateList[this.state.candidateList.length - count].key = this.state.candidateList.length - count;
 		}
 	}
 
@@ -110,11 +115,28 @@ class Create extends Component{
 				<Header	title = 'Create Poll'/>
 
 				{this.state.pollPin ? (
-					<div id="COME HRE JACOB">
-						Voting URL: <a href={"../poll/" + this.state.pollId}>{"../poll/" + this.state.pollId}</a><br/>
-						Manage Poll URL: <a href={"../create/" + this.state.pollPin}>{"../create/" + this.state.pollPin}</a><br/>
-						<RaisedButton label="Start"/>
-						<RaisedButton label="Stop"/>
+					<div style = {this.styles.list}>
+						<List>
+							<Subheader>Management</Subheader>
+							<ListItem
+								primaryText={<div>Voting URL: <a href={"../poll/" + this.state.pollId}>{"../poll/" + this.state.pollId}</a><br/></div>}
+							/>
+							<Divider />
+							<ListItem
+								primaryText={<div>Manage Poll URL: <a href={"../create/" + this.state.pollPin}>{"../create/" + this.state.pollPin}</a><br/></div>}
+							/>
+						</List>
+
+						<RaisedButton 
+							label="Stop"
+							style={this.styles.button}
+							primary={true}
+						/>
+						<RaisedButton 
+							label="Start"
+							style={this.styles.button}
+							primary={true}
+						/>
 					</div>
 				) : (
 					<div style={this.styles.list} >
