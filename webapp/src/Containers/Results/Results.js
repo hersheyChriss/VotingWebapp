@@ -10,7 +10,7 @@ class Results extends Component{
 		super(props);
 
 		this.state = {
-			winnerWinnerChickenDinners: {1:['Team1', 'Team2'], 2:['Team3'], 3:['Team4']},
+			winnerWinnerChickenDinners: {1:['Make Voting Great (Eventually)'], 2:['This Could be You!'], 3:['Example Team A','Example Team 73:)']},
 			winnersList: [],
 		};
 

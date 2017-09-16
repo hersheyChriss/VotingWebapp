@@ -43,8 +43,8 @@ class Poll extends Component {
 		super(props);
 
 		this.state = {
-			title: '',
-			items: [{disabled:"true", label:"cry"}, {disabled:"true", label:"uluate"}, {disabled:"true", label:"ball"}, {disabled:"true", label:"weep"}],
+			title: 'Poll',
+			items: [{disabled:"true", label:"Team Name Numero Uno"}, {disabled:"true", label:"Team Name Numero Dos"}, {disabled:"true", label:"Make Voting Great (Eventually)"}, {disabled:"true", label:"Team Name Numero Cuatro"}],
 		}
 
 		this.styles = {
