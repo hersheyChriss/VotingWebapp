@@ -20,8 +20,8 @@ poll_pins = {}
 def submit_vote():
     data = json.loads(request.data)
     poll_id = data[u'pollId']
-    vote_info = {int(key): data[u'preferences'][key] for key in data[u'preferences']}
-    polls[poll_id].submit_ballot(poll.Ballot(vote_info))
+    vote_info = [poll.Vote(str(data[u'preferences'][key]), int(key)) for key in data[u'preferences']]
+    polls[poll_id].submit_ballot(poll.Ballot(vote_info,'a'))
     return 'OK', 200
 
 
@@ -62,6 +62,7 @@ def create_poll():
     num_of_winners = int(data[u'numOfWinners'])
     poll_id = _unique_generator(8)
     poll_pin = _unique_generator(5)
+    poll_candidates = [poll.Candidate(c) for c in poll_candidates]
     polls[poll_id] = poll.Poll(poll_name, poll_candidates, poll_id, num_of_winners)
     poll_pins[poll_pin] = poll_id
     return json.dumps(dict(pollId=poll_id, pollPin = poll_pin)), 200
